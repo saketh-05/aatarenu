@@ -22,11 +22,11 @@ export default function Landing() {
     <div className='min-h-screen bg-gradient-to-b from-white via-blue-400 to-blue-950'>
       {/* Header */}
       <motion.header
-        style={{ opacity: headerOpacity }}
-        className={`navbar-header w-full fixed backdrop-blur-md z-50 transition-all duration-300 ${
-          isScrolled ? "bg-white/90 shadow-lg" : "bg-white/50"
-        }`}
-      >
+  style={{ opacity: headerOpacity }}
+  className={`navbar-header w-full sticky top-0 z-50 transition-all duration-300 ${
+    isScrolled ? "bg-white/90 shadow-lg" : "bg-white/50"
+  }`}
+>
         <div className='navbar-container p-2 max-w-7xl mx-auto px-4 py-4 flex justify-around items-center'>
           <div className='flex items-center gap-2'>
             <motion.div
@@ -40,7 +40,7 @@ export default function Landing() {
             <motion.h1
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
-              className='text-2xl font-bold text-blue-950 '
+              className='text-3xl font-bold text-blue-950 '
             >
               AataRenu
             </motion.h1>
@@ -50,12 +50,14 @@ export default function Landing() {
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 className='px-4 py-2 rounded-lg bg-white/80 border border-blue-500 text-blue-900 hover:bg-blue-50 shadow-md'
+                onClick={() => navigate("/login")}
               >
                 Login
               </motion.button>
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 className='px-4 py-2 ml-5 rounded-lg bg-blue-600 text-white hover:bg-blue-700 shadow-md'
+                onClick={() => navigate("/signup")}
               >
                 Sign Up
               </motion.button>
