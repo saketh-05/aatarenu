@@ -363,7 +363,7 @@ const Game = () => {
               </div>
               <div className='text-center transform transition-all duration-300 hover:scale-105'>
                 <h3 className='text-xl text-white'>Innings {innings}</h3>
-                <p className='text-lg text-white'>
+                <p className='text-lg text-blue-950'>
                   {isBatting ? "You're Batting" : "You're Bowling"}
                 </p>
               </div>
