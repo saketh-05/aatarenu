@@ -7,8 +7,8 @@ export default function Profile() {
   const navigate = useNavigate();
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
-    name: 'John Doe',
-    email: 'john.doe@example.com',
+    name: 'Uday',
+    email: 'uday@play.com',
     password: '',
     newPassword: '',
     confirmPassword: '',
