@@ -127,7 +127,7 @@ export default function Landing() {
               transition={{ delay: 1.2 }}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              onClick={() => navigate("/game")}
+              onClick={() => navigate("/profile")}
               className='px-8 py-4 bg-blue-600 text-white rounded-full text-xl font-semibold flex items-center gap-2 mx-auto md:mx-0 shadow-lg hover:shadow-blue-300/50'
             >
               Play Now <Play size={20} />

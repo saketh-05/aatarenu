@@ -4,7 +4,7 @@ import Landing from '../pages/Landing'; // Ensure correct import
 import Game from '../pages/Game';
 import Login from '../pages/Login';
 import Signup from '../pages/Signup';
-
+import Profile from '../pages/profile';
 const AppRoutes: React.FC = () => {
     return (
         <Routes> 
@@ -12,6 +12,7 @@ const AppRoutes: React.FC = () => {
             <Route path="/game" element={<Game />} />
             <Route path="/login" element={<Login/>}/>
             <Route path="/signup" element={<Signup/>}/>
+            <Route path="/profile" element={<Profile/>}/>
         </Routes>
     );
 };
