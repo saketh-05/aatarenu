@@ -2,16 +2,34 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { Eye, EyeOff, ArrowLeft, Mail, Lock } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
+  const {login} = useAuth();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // Handle login logic here
+    fetch('http://localhost:3000/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password, auth_type: "password" })
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.error) {
+          alert(data.error);
+        } else {
+          alert(data.message);
+          console.log(data);
+          login(data.sessionData.access_token, data.sessionData, data.userData);
+          navigate('/');
+        }
+    })
   };
 
   return (
@@ -48,7 +66,7 @@ export default function Login() {
               transition={{ duration: 0.8 }}
               className="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center shadow-lg"
             >
-              <span className="text-white text-2xl font-bold">HC</span>
+              <span className="text-white text-2xl font-bold">US</span>
             </motion.div>
           </motion.div>
 
@@ -120,17 +138,16 @@ export default function Login() {
               transition={{ delay: 0.4 }}
               className="flex items-center justify-between"
             >
-              <label className="flex items-center gap-2 cursor-pointer">
+              {/* <label className="flex items-center gap-2 cursor-pointer">
                 <input
                   type="checkbox"
                   className="w-4 h-4 rounded border-blue-300 text-blue-600 focus:ring-blue-500"
                 />
                 <span className="text-blue-900">Remember me</span>
-              </label>
+              </label> */}
               <motion.a
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                href="#"
                 className="text-blue-600 hover:text-blue-700 font-medium"
                 onClick={() => navigate("/forgotpassword")}
               >
@@ -156,7 +173,7 @@ export default function Login() {
               Don't have an account?{' '}
               <motion.a
                 whileHover={{ scale: 1.05 }}
-                href="#"
+                onClick={() => navigate('/signup')}
                 className="text-blue-600 hover:text-blue-700 font-medium"
               >
                 Sign Up

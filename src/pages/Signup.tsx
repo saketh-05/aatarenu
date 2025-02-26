@@ -1,24 +1,40 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { Eye, EyeOff, ArrowLeft, Mail, Lock, User, Phone } from 'lucide-react';
+import { Eye, EyeOff, ArrowLeft, Mail, Lock } from 'lucide-react';
 
 export default function Signup() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [formData, setFormData] = useState({
-    fullName: '',
     email: '',
-    phone: '',
-    password: '',
-    confirmPassword: '',
+    password: ''
   });
 
   const navigate = useNavigate();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if(formData.password !== confirmPassword) {
+      alert('Passwords do not match!');
+      return;
+    }
     // Handle signup logic here
+    fetch('http://localhost:3000/api/auth/signup', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ...formData })
+    })
+    .then((res) => res.json())
+    .then((data) => {
+      if (data.error) {
+        alert(data.error);
+      } else {
+        alert(data.message);
+        navigate('/login');
+      }
+  })
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -63,7 +79,7 @@ export default function Signup() {
               transition={{ duration: 0.8 }}
               className="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center shadow-lg"
             >
-              <span className="text-white text-2xl font-bold">HC</span>
+              <span className="text-white text-2xl font-bold">US</span>
             </motion.div>
           </motion.div>
 
@@ -76,7 +92,7 @@ export default function Signup() {
           </motion.h2>
 
           <form onSubmit={handleSubmit} className="space-y-5">
-            <motion.div
+            {/* <motion.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.1 }}
@@ -87,13 +103,13 @@ export default function Signup() {
                 <input
                   type="text"
                   name="fullName"
-                  value={formData.fullName}
+                  value={formData.display_name}
                   onChange={handleChange}
                   className="w-full pl-10 pr-4 py-3 rounded-lg bg-white/50 border border-blue-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all"
                   placeholder="Enter your full name"
                 />
               </div>
-            </motion.div>
+            </motion.div> */}
 
             <motion.div
               initial={{ opacity: 0, x: -20 }}
@@ -110,25 +126,6 @@ export default function Signup() {
                   onChange={handleChange}
                   className="w-full pl-10 pr-4 py-3 rounded-lg bg-white/50 border border-blue-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all"
                   placeholder="Enter your email"
-                />
-              </div>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.3 }}
-            >
-              <label className="block text-blue-900 mb-2 font-medium">Phone Number</label>
-              <div className="relative">
-                <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-blue-500" size={20} />
-                <input
-                  type="tel"
-                  name="phone"
-                  value={formData.phone}
-                  onChange={handleChange}
-                  className="w-full pl-10 pr-4 py-3 rounded-lg bg-white/50 border border-blue-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all"
-                  placeholder="Enter your phone number"
                 />
               </div>
             </motion.div>
@@ -180,8 +177,8 @@ export default function Signup() {
                 <input
                   type={showConfirmPassword ? 'text' : 'password'}
                   name="confirmPassword"
-                  value={formData.confirmPassword}
-                  onChange={handleChange}
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
                   className="w-full pl-10 pr-12 py-3 rounded-lg bg-white/50 border border-blue-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all"
                   placeholder="Confirm your password"
                 />

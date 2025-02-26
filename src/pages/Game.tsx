@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+import OutEffect from "../components/helpers/OutEffect";
 
 type GamePhase = "toss" | "playing" | "ended";
 
@@ -10,6 +11,7 @@ const Game = () => {
   const [showTossResult, setShowTossResult] = useState<boolean>(false);
   const [animateHands, setAnimateHands] = useState<boolean>(false);
   const [shake, setShake] = useState<boolean>(false);
+  const [showOutEffect, setShowOutEffect] = useState<boolean>(false);
 
   // Game phase state
   const [gamePhase, setGamePhase] = useState<GamePhase>("toss");
@@ -28,9 +30,13 @@ const Game = () => {
   const [computerScore, setComputerScore] = useState<number>(0);
   const [target, setTarget] = useState<number | null>(null);
   const [innings, setInnings] = useState<number>(1);
-  const [winner, setWinner] = useState<"player" | "computer" | "draw" | null>(
-    null
-  );
+  const [winner, setWinner] = useState<
+    | "player"
+    | "computer"
+    | "draw"
+    | "Unknown error occured! We are sorry for the inconvenience"
+    | null
+  >(null);
 
   // Dummy hand images object (update the paths as needed)
   const handImages: {
@@ -54,27 +60,6 @@ const Game = () => {
     defaultCom: "/hand-signs/defaultCom.webp",
   };
 
-  // // Background parallax effect
-  // const handleMouseMove = (e: MouseEvent): void => {
-  //   const xAxis = (window.innerWidth / 2 - e.pageX) / 25;
-  //   const yAxis = (window.innerHeight / 2 - e.pageY) / 25;
-  //   const elements = document.querySelectorAll(".parallax");
-  //   elements.forEach((elem) => {
-  //     const speedAttr = elem.getAttribute("data-speed");
-  //     const speed = speedAttr ? parseFloat(speedAttr) : 1;
-  //     (elem as HTMLElement).style.transform = `translateX(${
-  //       xAxis * speed
-  //     }px) translateY(${yAxis * speed}px)`;
-  //   });
-  // };
-
-  // useEffect(() => {
-  //   window.addEventListener("mousemove", handleMouseMove);
-  //   return () => {
-  //     window.removeEventListener("mousemove", handleMouseMove);
-  //   };
-  // }, []);
-
   // Returns a random number between 1 and 6
   const generateComputerChoice = (): number => {
     return Math.floor(Math.random() * 6) + 1;
@@ -91,7 +76,30 @@ const Game = () => {
       setGamePhase("playing");
       setIsBatting(!isBatting);
     } else {
-      checkWinCondition()
+      // Second innings ends: check win condition
+      if (target !== null) {
+        if (isBatting && playerScore > target) {
+          setWinner("player");
+          setGamePhase("ended");
+        } else if (isBatting && playerScore < target) {
+          setWinner("computer");
+          setGamePhase("ended");
+        } else if (!isBatting && computerScore > target) {
+          setWinner("computer");
+          setGamePhase("ended");
+        } else if (!isBatting && computerScore < target) {
+          setWinner("player");
+          setGamePhase("ended");
+        } else if (playerScore === target || computerScore === target) {
+          setWinner("draw");
+          setGamePhase("ended");
+        } else {
+          setWinner(
+            "Unknown error occured! We are sorry for the inconvenience"
+          );
+          setGamePhase("ended");
+        }
+      }
     }
   };
 
@@ -140,10 +148,12 @@ const Game = () => {
       setAnimateHands(false);
       if (number === compChoice) {
         setShake(true);
+        setShowOutEffect(true);
         setTimeout(() => {
+          setShowOutEffect(false);
           setShake(false);
           handleOut();
-        }, 1000);
+        }, 2000);
       } else {
         if (isBatting) {
           setPlayerScore((prev) => prev + number);
@@ -151,7 +161,7 @@ const Game = () => {
           setComputerScore((prev) => prev + compChoice);
         }
       }
-    }, 1000);
+    }, 500);
   };
 
   const handleTossChoiceInput = (choice: "odd" | "even") => {
@@ -200,18 +210,7 @@ const Game = () => {
       className='min-h-screen bg-gradient-to-br from-blue-500 to-purple-600 p-8 relative overflow-hidden'
       style={{ perspective: "1000px" }}
     >
-      {/* Parallax Background Elements
-      <div className='absolute inset-0 overflow-hidden'>
-        <div className='parallax' data-speed='2'>
-          <div className='absolute w-32 h-32 bg-white/10 rounded-full -top-16 -left-16 blur-xl'></div>
-        </div>
-        <div className='parallax' data-speed='4'>
-          <div className='absolute w-48 h-48 bg-white/10 rounded-full top-1/4 -right-24 blur-xl'></div>
-        </div>
-        <div className='parallax' data-speed='3'>
-          <div className='absolute w-40 h-40 bg-white/10 rounded-full bottom-1/4 -left-20 blur-xl'></div>
-        </div>
-      </div> */}
+      <AnimatePresence>{showOutEffect && <OutEffect />}</AnimatePresence>
 
       {/* Main Game Container */}
       <div
@@ -421,11 +420,11 @@ const Game = () => {
                   <img
                     src={
                       computerChoice
-                        ? handImages[computerChoice]
+                        ? handImages[computerChoice + 10]
                         : handImages.defaultCom
                     }
                     alt='Computer hand'
-                    className='w-full h-full object-contain transform hover:scale-110 transition-transform scale-x-[-1]'
+                    className='w-full h-full object-contain transform hover:scale-110 transition-transform'
                   />
                 </div>
               </div>
@@ -467,7 +466,12 @@ const Game = () => {
           </div>
         )}
       </div>
-      <button className="text-xl text-emerald-900 bg-emerald-400 rounded-3xl font-mono mb-4 animate-slide-up p-3 mt-10" onClick={() => navigate('/')}>Home</button>
+      <button
+        className='text-xl text-emerald-900 bg-emerald-400 rounded-3xl font-mono mb-4 animate-slide-up p-3 mt-10'
+        onClick={() => navigate("/")}
+      >
+        Home
+      </button>
     </motion.div>
   );
 };

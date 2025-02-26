@@ -2,11 +2,13 @@ import { useState, useEffect } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { Github, Twitter, Instagram, Play, Menu } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 export default function Landing() {
   const [isScrolled, setIsScrolled] = useState(false);
   const { scrollY } = useScroll();
   const navigate = useNavigate();
+  const { isLogged } = useAuth();
 
   useEffect(() => {
     const updateScroll = () => {
@@ -22,11 +24,11 @@ export default function Landing() {
     <div className='min-h-screen bg-gradient-to-b from-white via-blue-400 to-blue-950'>
       {/* Header */}
       <motion.header
-  style={{ opacity: headerOpacity }}
-  className={`navbar-header w-full sticky top-0 z-50 transition-all duration-300 ${
-    isScrolled ? "bg-white/90 shadow-lg" : "bg-white/50"
-  }`}
->
+        style={{ opacity: headerOpacity }}
+        className={`navbar-header w-full sticky top-0 z-50 transition-all duration-300 ${
+          isScrolled ? "bg-white/90 shadow-lg" : "bg-white/50"
+        }`}
+      >
         <div className='navbar-container p-2 max-w-7xl mx-auto px-4 py-4 flex justify-around items-center'>
           <div className='flex items-center gap-2'>
             <motion.div
@@ -35,7 +37,7 @@ export default function Landing() {
               transition={{ duration: 0.8 }}
               className='w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center shadow-lg'
             >
-              <span className='text-white text-xl font-bold'>HC</span>
+              <span className='text-white text-xl font-bold'>US</span>
             </motion.div>
             <motion.h1
               initial={{ opacity: 0, x: -20 }}
@@ -47,20 +49,33 @@ export default function Landing() {
           </div>
           <div className='hidden md:flex space-x-6'>
             <nav>
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                className='px-4 py-2 rounded-lg bg-white/80 border border-blue-500 text-blue-900 hover:bg-blue-50 shadow-md'
-                onClick={() => navigate("/login")}
-              >
-                Login
-              </motion.button>
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                className='px-4 py-2 ml-5 rounded-lg bg-blue-600 text-white hover:bg-blue-700 shadow-md'
-                onClick={() => navigate("/signup")}
-              >
-                Sign Up
-              </motion.button>
+              {!isLogged && (
+                <>
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    className='px-4 py-2 rounded-lg bg-white/80 border border-blue-500 text-blue-900 hover:bg-blue-50 shadow-md'
+                    onClick={() => navigate("/login")}
+                  >
+                    Login
+                  </motion.button>
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    className='px-4 py-2 ml-5 rounded-lg bg-blue-600 text-white hover:bg-blue-700 shadow-md'
+                    onClick={() => navigate("/signup")}
+                  >
+                    Sign Up
+                  </motion.button>
+                </>
+              )}
+              {isLogged && (
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  className='px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 shadow-md'
+                  onClick={() => navigate("/profile")}
+                >
+                  Profile
+                </motion.button>
+              )}
             </nav>
           </div>
 
@@ -127,7 +142,7 @@ export default function Landing() {
               transition={{ delay: 1.2 }}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              onClick={() => navigate("/profile")}
+              onClick={() => navigate("/game")}
               className='px-8 py-4 bg-blue-600 text-white rounded-full text-xl font-semibold flex items-center gap-2 mx-auto md:mx-0 shadow-lg hover:shadow-blue-300/50'
             >
               Play Now <Play size={20} />
