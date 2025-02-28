@@ -22,7 +22,11 @@ export default function NewPassword() {
       return;
     }
     setError("");
-    fetch("http://localhost:3000/api/auth/update-password", {
+    const backendUrl = import.meta.env.VITE_BACKEND_URL_PROD || '';
+    // console.log(backendUrl);
+    const url = `${backendUrl}/api/auth/update-password`;
+  
+    fetch(url, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ newPassword }),
