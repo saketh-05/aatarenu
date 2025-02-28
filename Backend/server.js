@@ -10,12 +10,12 @@ app.listen(3000, () => {
   console.log("Server running on port 3000");
 });
 
-const frontend_url_prod = process.env.FRONTEND_URL_PROD || "";
-const frontend_url_dev = process.env.FRONTEND_URL_DEV || "";
+const frontend_url_prod = process.env.FRONTEND_URL_PROD;
+// const frontend_url_dev = process.env.FRONTEND_URL_DEV || "";
 
 // Allow CORS
 const corsOptions = {
-  origin: [frontend_url_prod, frontend_url_dev],
+  origin: frontend_url_prod,
   credentials: true,
   allowedHeaders: [
     "Origin",
