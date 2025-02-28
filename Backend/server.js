@@ -10,11 +10,12 @@ app.listen(3000, () => {
   console.log("Server running on port 3000");
 });
 
-const frontend_url = process.env.FRONTEND_URL_PROD || "";
+const frontend_url_prod = process.env.FRONTEND_URL_PROD || "";
+const frontend_url_dev = process.env.FRONTEND_URL_DEV || "";
 
 // Allow CORS
 const corsOptions = {
-  origin: frontend_url,
+  origin: [frontend_url_prod, frontend_url_dev],
   credentials: true,
   allowedHeaders: [
     "Origin",
@@ -59,7 +60,7 @@ app.post("/api/auth/signup", async (req, res) => {
 });
 
 app.post("/api/auth/login", async (req, res) => {
-  console.log(req.body);
+  // console.log(req.body);
   const { email, password, auth_type } = req.body;
   if (!email || !auth_type) {
     res.status(400).json({ error: "Email and auth_type are required" });
@@ -108,7 +109,7 @@ app.post("/api/auth/logout", async (req, res) => {
 app.post("/api/auth/forgot-password", async (req, res) => {
   const { email } = req.body;
   const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
-    redirectTo: `${frontend_url}/reset-password`,
+    redirectTo: `${frontend_url_prod}/reset-password`,
   });
 
   if (error) {
