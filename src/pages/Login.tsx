@@ -14,7 +14,11 @@ export default function Login() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // Handle login logic here
-    fetch('http://localhost:3000/api/auth/login', {
+    const backendUrl = import.meta.env.VITE_BACKEND_URL_PROD || '';
+    // console.log(backendUrl);
+    const url = `${backendUrl}/api/auth/login`;
+
+    fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password, auth_type: "password" })
@@ -25,7 +29,7 @@ export default function Login() {
           alert(data.error);
         } else {
           alert(data.message);
-          console.log(data);
+          // console.log(data);
           login(data.sessionData.access_token, data.sessionData, data.userData);
           navigate('/');
         }

@@ -14,7 +14,11 @@ export default function ForgotPassword() {
   const handleEmailSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // Handle sending verification code logic here
-    fetch("http://localhost:3000/api/auth/forgot-password", {
+    const backendUrl = import.meta.env.VITE_BACKEND_URL_PROD || '';
+    // console.log(backendUrl);
+    const url = `${backendUrl}/api/auth/forgot-password`;
+
+    fetch(url, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email }),
