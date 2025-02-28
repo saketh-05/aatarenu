@@ -10,9 +10,11 @@ app.listen(3000, () => {
   console.log("Server running on port 3000");
 });
 
-// Allow CORS for localhost:5173
+const frontend_url = process.env.FRONTEND_URL_PROD || "";
+
+// Allow CORS
 const corsOptions = {
-  origin: "http://localhost:5173",
+  origin: frontend_url,
   credentials: true,
   allowedHeaders: [
     "Origin",
@@ -106,7 +108,7 @@ app.post("/api/auth/logout", async (req, res) => {
 app.post("/api/auth/forgot-password", async (req, res) => {
   const { email } = req.body;
   const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
-    redirectTo: "http://localhost:3000/reset-password",
+    redirectTo: `${frontend_url}/reset-password`,
   });
 
   if (error) {
