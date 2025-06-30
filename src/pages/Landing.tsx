@@ -79,6 +79,13 @@ export default function Landing() {
             </nav>
           </div>
 
+          <div className='relative block w-24 h-24'>
+            <img
+              src='landing-page-images/black_circle_360x360.png'
+              className='absolute right-0 top-0 w-full h-full object-cover rounded-full shadow-lg'
+            />
+          </div>
+
           <button className='md:hidden text-blue-900'>
             {" "}
             {/* this is hamburger icon for mobiles */}
